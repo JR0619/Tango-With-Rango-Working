@@ -1,19 +1,19 @@
-#
+# 
 # Tango with Django 2 Progress Tests
 # By Leif Azzopardi and David Maxwell
 # With assistance from Enzo Roiz (https://github.com/enzoroiz) and Gerardo A-C (https://github.com/gerac83)
-#
+# 
 # Chapter 7 -- Forms
 # Last updated: January 7th, 2020
 # Revising Author: David Maxwell
-#
+# 
 
 #
 # In order to run these tests, copy this module to your tango_with_django_project/rango/ directory.
 # Once this is complete, run $ python manage.py test rango.tests_chapter7
-#
+# 
 # The tests will then be run, and the output displayed -- do you pass them all?
-#
+# 
 # Once you are done with the tests, delete the module. You don't need to put it in your Git repository!
 #
 
@@ -42,7 +42,7 @@ class Chapter7FormClassTests(TestCase):
         forms_module_path = os.path.join(rango_app_path, 'forms.py')
 
         self.assertTrue(os.path.exists(forms_module_path), f"{FAILURE_HEADER}We couldn't find Rango's new forms.py module. This is required to be created at the top of Section 7.2. This module should be storing your two form classes.{FAILURE_FOOTER}")
-
+    
     def test_category_form_class(self):
         """
         Does the CategoryForm implementation exist, and does it contain the correct instance variables?
@@ -86,9 +86,9 @@ class Chapter7CategoryFormAncillaryTests(TestCase):
             resolved_name = resolve('/rango/add_category/').view_name
         except:
             resolved_name = ''
-
+        
         self.assertEqual(resolved_name, 'rango:add_category', f"{FAILURE_HEADER}The lookup of URL '/rango/add_category/' didn't return a mapping name of 'rango:add_category'. Check you have the correct URL mapping for adding a category, and try again.{FAILURE_FOOTER}")
-
+    
     def test_index_link_added(self):
         """
         Checks whether a link has been added as required on the index page, taking a user to the add category page.
@@ -119,17 +119,17 @@ class Chapter7CategoryFormAncillaryTests(TestCase):
         self.assertTrue('name="name"' in content, f"{FAILURE_HEADER}We couldn't find the form field 'name' in the rendered add_category() response. Check that your form is being created correctly.{FAILURE_FOOTER}")
         self.assertTrue('<input type="submit" name="submit" value="Create Category" />' in content, f"{FAILURE_HEADER}Couldn't find the button for 'Create Category' in the add_category() response. Check the template add_category.html.{FAILURE_FOOTER}")
         self.assertTrue('action="/rango/add_category/"' in content, f"{FAILURE_HEADER}Couldn't find the correct action URL for the form in add_category.html. Check that the correct URL is provided!{FAILURE_FOOTER}")
-
+    
     def test_add_category_functionality(self):
         """
         Adds a category using the form, submits the request, and checks that the new category then exists.
         """
         self.client.post(reverse('rango:add_category'),
                          {'name': 'Erlang', 'views': 0, 'likes': 0})
-
+        
         categories = Category.objects.filter(name='Erlang')
         self.assertEqual(len(categories), 1, f"{FAILURE_HEADER}When adding a new category, it does not appear in the list of categories after being created. Check your add_category() view as the start of a debugging point.{FAILURE_FOOTER}")
-
+    
     def test_category_exists(self):
         """
         Attempts to add a category that already exists.
@@ -138,7 +138,7 @@ class Chapter7CategoryFormAncillaryTests(TestCase):
 
         response = self.client.post(reverse('rango:add_category'),
                                             {'name': 'Python', 'views': 0, 'likes': 0})
-
+        
         self.assertTrue('Category with this Name already exists.' in response.content.decode(), f"{FAILURE_HEADER}When attempting to add a category that already exists, we didn't get the error message we were expecting. Please check your add_category() view and add_category.html template.{FAILURE_FOOTER}")
 
 class Chapter7PageFormClassTests(TestCase):
@@ -173,7 +173,7 @@ class Chapter7PageFormClassTests(TestCase):
 
             self.assertTrue(expected_field_name in fields.keys(), f"{FAILURE_HEADER}The field '{expected_field_name}' was not found in your PageForm implementation. Check you have all required fields, and try again.{FAILURE_FOOTER}")
             self.assertEqual(expected_field, type(fields[expected_field_name]), f"{FAILURE_HEADER}The field '{expected_field_name}' in PageForm was not of the expected type '{type(fields[expected_field_name])}'.{FAILURE_FOOTER}")
-
+    
 class Chapter7PageFormAncillaryTests(TestCase):
     """
     Performs a series of tests to check the response of the server under different conditions when adding pages.
@@ -186,9 +186,9 @@ class Chapter7PageFormAncillaryTests(TestCase):
             resolved_url = reverse('rango:add_page', kwargs={'category_name_slug': 'python'})
         except:
             resolved_url = ''
-
+        
         self.assertEqual(resolved_url, '/rango/category/python/add_page/', f"{FAILURE_HEADER}The lookup of URL name 'rango:add_page' didn't return a URL matching '/rango/category/python/add_page/', when using category 'python'. Check you have the correct mappings and URL parameters, and try again.{FAILURE_FOOTER}")
-
+    
     def test_add_page_template(self):
         """
         Checks whether a template was used for the add_page() view.
@@ -196,7 +196,7 @@ class Chapter7PageFormAncillaryTests(TestCase):
         populate()
         response = self.client.get(reverse('rango:add_page', kwargs={'category_name_slug': 'python'}))
         self.assertTemplateUsed(response, 'rango/add_page.html', f"{FAILURE_HEADER}The add_page.html template is not used for the add_page() view. The specification requires this.{FAILURE_FOOTER}")
-
+    
     def test_add_page_form_response(self):
         """
         Checks whether the template rendering add_page() contains a form, and whether it points to the add_page view.
@@ -208,15 +208,15 @@ class Chapter7PageFormAncillaryTests(TestCase):
 
         self.assertTrue('<form' in content, f"{FAILURE_HEADER}We couldn't find a <form> element in the response for adding a page.{FAILURE_FOOTER}")
         self.assertTrue('action="/rango/category/django/add_page/"' in content, f"{FAILURE_HEADER}We couldn't find the correct action URL for adding a page in your add_page.html template. We expected to see 'action=\"/rango/django/add_page/\"' when adding a page to the 'python' category.{FAILURE_FOOTER}")
-
+    
     def test_add_page_bad_category(self):
         """
         Tests whether the response for adding a page when specifying a non-existent category is per the specification.
         """
         response = self.client.get(reverse('rango:add_page', kwargs={'category_name_slug': 'non-existent'}))
 
-        self.assertEqual(response.status_code, 302, f"{FAILURE_HEADER}When attempting to add a new page to a category that doesn't exist, we weren't redirected. We were expecting a redirect -- check you add_page() view.{FAILURE_FOOTER}")
-        self.assertEqual(response.url, '/rango/', f"{FAILURE_HEADER}When attempting to add a new page to a category that doesn't exist, we were not redirected to the Rango homepage. Check your add_page() view, and try again.{FAILURE_FOOTER}")
+        self.assertEquals(response.status_code, 302, f"{FAILURE_HEADER}When attempting to add a new page to a category that doesn't exist, we weren't redirected. We were expecting a redirect -- check you add_page() view.{FAILURE_FOOTER}")
+        self.assertEquals(response.url, '/rango/', f"{FAILURE_HEADER}When attempting to add a new page to a category that doesn't exist, we were not redirected to the Rango homepage. Check your add_page() view, and try again.{FAILURE_FOOTER}")
 
     def test_add_page_functionality(self):
         """
