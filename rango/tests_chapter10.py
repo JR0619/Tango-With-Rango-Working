@@ -1,19 +1,19 @@
-#
+# 
 # Tango with Django 2 Progress Tests
 # By Leif Azzopardi and David Maxwell
 # With assistance from Gerardo A-C (https://github.com/gerac83) and Enzo Roiz (https://github.com/enzoroiz)
-#
+# 
 # Chapter 10 -- Cookies and Sessions
 # Last updated: January 10th, 2020
 # Revising Author: David Maxwell
-#
+# 
 
 #
 # In order to run these tests, copy this module to your tango_with_django_project/rango/ directory.
 # Once this is complete, run $ python manage.py test rango.tests_chapter10
-#
+# 
 # The tests will then be run, and the output displayed -- do you pass them all?
-#
+# 
 # Once you are done with the tests, delete the module. You don't need to put it in your Git repository!
 #
 
@@ -45,7 +45,7 @@ class Chapter10ConfigurationTests(TestCase):
         Tests to see if the SessionMiddleware is present in the project configuration.
         """
         self.assertTrue('django.contrib.sessions.middleware.SessionMiddleware' in settings.MIDDLEWARE)
-
+    
     def test_session_app_present(self):
         """
         Tests to see if the sessions app is present.
@@ -76,7 +76,7 @@ class Chapter10SessionPersistenceTests(TestCase):
             session['last_visit'] = str(last_visit)
             session.save()
 
-            self.assertEqual(session['visits'], i+1)
+            self.assertEquals(session['visits'], i+1)
 
 class Chapter10ViewTests(TestCase):
     """
@@ -92,7 +92,7 @@ class Chapter10ViewTests(TestCase):
         content = response.content.decode()
 
         self.assertTrue('visits:' not in content.lower(), f"{FAILURE_HEADER}The index.html template should not contain any logic for displaying the number of views. Did you complete the exercises?{FAILURE_FOOTER}")
-
+    
     def test_about_view(self):
         """
         Checks to see if the about view has the correct presentation for showing the number of visits.
@@ -102,7 +102,7 @@ class Chapter10ViewTests(TestCase):
         content = response.content.decode()
 
         self.assertTrue('Visits: 1' in content, f"{FAILURE_HEADER}In your about.html template, please check that you have the correct output for displaying the number of visits. Capital letters matter. Otherwise, check your about() view and the cookie handling logic.{FAILURE_FOOTER}")
-
+    
     def test_visits_passed_via_context(self):
         """
         Checks that the context dictionary contains the correct values.
